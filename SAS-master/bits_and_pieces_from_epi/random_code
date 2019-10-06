@@ -1,0 +1,98 @@
+DATA complete; set complete;
+array Item {50} Item1-Item50;
+array Yourname {50} Yourname1-Yourname50;
+do i = 1 to 50;
+if Item{i} ge 7 then Yourname{i} = 1;
+else if Item{i} in (1,2,3,4,5,6) then Yourname{i} = 0;
+else if Item{i} = . then Yourname{i} = .;
+END;
+
+mean_Yourname = mean(of Yourname1-Yourname50);
+RUN;
+
+
+%macro msurveymean;
+ %do i=1 %to 200;
+ PROC SURVEYSELECT data=complete out=work.control2&i method=srs samprate=0.348;
+where YCAT=0;
+RUN;
+data work.CaseCohort&i; 
+set case work.control2&i; 
+run;
+ods output RelativeRisks=Output&i;
+PROC FREQ data=work.CaseCohort&i order=data;
+table ziti*YCAT/relrisk;
+RUN;
+proc print data=output&i;
+run;
+%end;
+%mend msurveymean;
+%msurveymean;
+
+
+
+data WANT;
+	set output1-output200;
+run;
+proc print data=want;
+run;
+data want2;
+set want;
+if Statistic="Relative Risk (Column 1)" OR Statistic="Relative Risk (Column 2)" then delete;
+run;
+
+
+proc means data=want2;
+var value;
+run;
+/*mean odds ratio is 1.5814262*/
+
+
+
+
+
+
+/*4*/
+goptions reset=all;
+axis1 label=("CFDRIGHT");
+axis2 label=("RIDAGEYR");
+symbol1 value=dot color =blue interpol=R;
+symbol2 value=dot color=red interpol=R;
+
+proc gplot data=work.hw4;
+plot CFDRIGHT*RIDAGEYR=SEDB  ;
+run;
+
+
+/*10*/
+
+proc glm;
+class DMDEDUC;
+      model CFDRIGHT=RIDAGEYR SEDB DMDEDUC/solution;
+run;
+/*Adding DMDEDUC to the (glm) model increases the R^2 value to 0.3439
+The R^2 in question 8 was 0.1170
+0.3439-0.117=0.2269*/
+
+
+
+
+
+
+
+
+
+
+
+/*3*/
+
+proc surveyselect data = WORK.HW3 out = WORK.HW3_random seed=94
+method = srs samprate = 0.5;
+run;
+/*The total sample size is 583*/
+
+/*4b*/
+proc ttest data = WORK.HW3_random;
+class SEDB;
+var CFDRIGHT;
+run;

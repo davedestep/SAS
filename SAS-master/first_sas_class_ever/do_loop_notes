@@ -1,0 +1,64 @@
+/*Do loops*/
+Data DA;
+	Do n = 1 to 20;  /*specifiy the range of values for the loop*/
+		SumofNumbers = (n)*(n+1)/2; /*Some action or new variable calculated inside the loop*/
+		output;	/*Output must be included to advance data lines or it will keep writing over the previous data*/
+	end; /*end closes off the loop*/
+Run;
+
+Proc Print data=DA;
+run;run;
+
+Data DA2;
+	Do n = 1 to 20;  
+		Total + 2 ; /*This is a statement that initializes 
+		              a variable to zero and increments by 
+		              the amount given (2 in this case).
+		              Notice that no equal sign is used*/
+
+		output;	
+	end; 
+Run;
+
+Proc Print data=DA2;
+run;
+
+Data DA3;
+	Do n = 15 to 78 by 3;  /*loop does not need to increment by 1*/
+		SquareRoot = sqrt(n); 
+		output;	
+	end; 
+Run;
+
+Proc Print data=DA3;
+run;
+
+
+
+
+/* Do while, Do until loops*/
+Data RandTruc;
+	Call Streaminit(-1); /* 55 is the seed and different numbers can be tried
+						  for different random sequences*/
+						 /*-1 is a random starting seed*/
+	Do while (x <= .95); /*Condition provided in parentheses involving a variable in the loop*/
+		x =rand('uniform'); /*ranuni generates a uniform (0,1) variable*/
+		               
+		output;
+	end; 
+run;
+
+proc print data= RandTruc;
+run;
+
+
+Data LeftNorm;
+	Do until (x > 2); /*looping stops when condition is met*/
+		x =rand('normal'); /*rand('normal') without additional parameters 
+                                     generates a standard normal variable*/
+		output;
+	end; 
+run;
+
+proc print data= LeftNorm;
+run;
