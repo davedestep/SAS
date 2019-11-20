@@ -44,7 +44,7 @@ keep ID internalcaseid classification6 classification7 multilevel2 multilevel2_l
 run;
 
 data classify_9205_test;
-set classify_9205 singles;
+set classify_9205_test singles;
 run;
 
 data &dataset.;
